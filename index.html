@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Apex Veneno V12 — 3D Supercar Showcase</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='12,2 2,22 22,22' fill='%23ff5500'/></svg>">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 
   <!-- Three.js Import Map -->
   <script type="importmap">
@@ -76,70 +76,106 @@
   <!-- Mobile Controls Drawer Backdrop -->
   <div id="drawer-backdrop" class="drawer-backdrop"></div>
 
-  <!-- Unified HUD Wrapper (Side panels on desktop, bottom slide-up sheet on mobile) -->
-  <div id="hud-container" class="hud-container">
-    <!-- Mobile Drawer Top Bar & Tabs (Visible only on mobile/tablet) -->
-    <div class="mobile-drawer-top">
-      <div class="drawer-handle-bar"></div>
-      <div class="mobile-drawer-nav">
-        <div class="mobile-segmented-control">
-          <button id="mob-tab-config" class="mob-tab active">🎨 Configurator</button>
-          <button id="mob-tab-telemetry" class="mob-tab">⚡ Specs & Systems</button>
-        </div>
-        <button id="drawer-close" class="drawer-close-btn" title="Close Controls">&times;</button>
-      </div>
-    </div>
+  <!-- Floating Edge Tabs to Reopen Collapsed Drawers -->
+  <button id="btn-expand-left" class="edge-tab edge-tab-left glass-panel" title="Open Specs & Systems">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+    </svg>
+    <span>Specs & Systems</span>
+    <span class="edge-chevron">▶</span>
+  </button>
 
+  <button id="btn-expand-right" class="edge-tab edge-tab-right glass-panel" title="Open Configurator">
+    <span class="edge-chevron">◀</span>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+    <span id="edge-right-label">Configurator</span>
+  </button>
+
+  <!-- Unified HUD Wrapper -->
+  <div id="hud-container" class="hud-container">
     <!-- Left HUD: Vehicle Specs & Controls -->
     <aside id="panel-left" class="hud-panel glass-panel panel-left">
-    <div>
-      <div class="panel-section-title">Powertrain Telemetry</div>
-      <div class="telemetry-grid">
-        <div class="telemetry-cell">
-          <div class="telemetry-val">640 <span>HP</span></div>
-          <div class="telemetry-desc">5.2L Naturally Aspirated</div>
+      <div class="panel-header-bar">
+        <div class="panel-header-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <span>Specs & Systems</span>
         </div>
-        <div class="telemetry-cell">
-          <div class="telemetry-val">2.9 <span>S</span></div>
-          <div class="telemetry-desc">0-60 MPH</div>
+        <button id="btn-collapse-left" class="panel-collapse-btn" title="Collapse Drawer">
+          <span class="collapse-icon">◀</span>
+          <span>Collapse</span>
+        </button>
+      </div>
+
+      <div class="panel-content-scroll">
+        <div>
+          <div class="panel-section-title">Powertrain Telemetry</div>
+          <div class="telemetry-grid">
+            <div class="telemetry-cell">
+              <div class="telemetry-val">640 <span>HP</span></div>
+              <div class="telemetry-desc">5.2L Naturally Aspirated</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="telemetry-val">2.9 <span>S</span></div>
+              <div class="telemetry-desc">0-60 MPH</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="telemetry-val">202 <span>MPH</span></div>
+              <div class="telemetry-desc">Top Speed</div>
+            </div>
+            <div class="telemetry-cell">
+              <div class="telemetry-val">8,500 <span>RPM</span></div>
+              <div class="telemetry-desc">Redline Symphony</div>
+            </div>
+          </div>
         </div>
-        <div class="telemetry-cell">
-          <div class="telemetry-val">202 <span>MPH</span></div>
-          <div class="telemetry-desc">Top Speed</div>
-        </div>
-        <div class="telemetry-cell">
-          <div class="telemetry-val">8,500 <span>RPM</span></div>
-          <div class="telemetry-desc">Redline Symphony</div>
+
+        <!-- Active Component Actuation -->
+        <div>
+          <div class="panel-section-title">Active Systems</div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div id="btn-doors" class="toggle-item">
+              <span class="toggle-label">Scissor Doors</span>
+              <span class="status-text">CLOSED</span>
+            </div>
+            <div id="btn-spoiler" class="toggle-item">
+              <span class="toggle-label">Active Rear Wing</span>
+              <span class="status-text">RETRACTED</span>
+            </div>
+            <div id="btn-xray" class="toggle-item">
+              <span class="toggle-label">Powertrain X-Ray</span>
+              <span class="status-text">OFF</span>
+            </div>
+            <div id="btn-explode" class="toggle-item">
+              <span class="toggle-label">Explode Assembly</span>
+              <span class="status-text">OFF</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </aside>
 
-    <!-- Active Component Actuation -->
-    <div>
-      <div class="panel-section-title">Active Systems</div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div id="btn-doors" class="toggle-item">
-          <span class="toggle-label">Scissor Doors</span>
-          <span class="status-text">CLOSED</span>
+    <!-- Right HUD: Mode-Specific Customization Panels -->
+    <aside id="panel-right" class="hud-panel glass-panel panel-right">
+      <div class="panel-header-bar">
+        <div class="panel-header-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span id="right-panel-header-title">Configurator</span>
         </div>
-        <div id="btn-spoiler" class="toggle-item">
-          <span class="toggle-label">Active Rear Wing</span>
-          <span class="status-text">RETRACTED</span>
-        </div>
-        <div id="btn-xray" class="toggle-item">
-          <span class="toggle-label">Powertrain X-Ray</span>
-          <span class="status-text">OFF</span>
-        </div>
-        <div id="btn-explode" class="toggle-item">
-          <span class="toggle-label">Explode Assembly</span>
-          <span class="status-text">OFF</span>
-        </div>
+        <button id="btn-collapse-right" class="panel-collapse-btn" title="Collapse Drawer">
+          <span>Collapse</span>
+          <span class="collapse-icon">▶</span>
+        </button>
       </div>
-    </div>
-  </aside>
 
-  <!-- Right HUD: Mode-Specific Customization Panels -->
-  <aside class="hud-panel glass-panel panel-right">
+      <div class="panel-content-scroll">
     <!-- Studio Configurator Panel -->
     <div id="panel-configurator">
       <div class="panel-section-title">Exterior Paint Finish</div>
@@ -226,18 +262,10 @@
         <div class="telemetry-desc">Dual Inverter Rotor Speed</div>
       </div>
     </div>
+    </div> <!-- end .panel-content-scroll -->
   </aside>
   </div>
 
-  <!-- Mobile Floating Trigger to Open Controls Drawer -->
-  <button id="btn-mobile-drawer" class="mobile-drawer-trigger glass-panel" title="Open Customizer & Specs">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-    </svg>
-    <span>Customize & Specs</span>
-    <span class="trigger-chevron">▲</span>
-  </button>
 
   <!-- Bottom Camera Presets -->
   <div class="bottom-nav glass-panel">
@@ -272,6 +300,6 @@
   </div>
 
   <!-- Main JavaScript App -->
-  <script type="module" src="main.js"></script>
+  <script type="module" src="main.js?v=2"></script>
 </body>
 </html>
