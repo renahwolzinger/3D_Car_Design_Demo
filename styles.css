@@ -161,6 +161,63 @@ html, body {
   color: #555e6d;
 }
 
+/* Global HUD Hidden Mode (Clean Snapshot / Photography Mode) */
+body.hud-hidden .hud-panel,
+body.hud-hidden .bottom-nav,
+body.hud-hidden .drive-hud,
+body.hud-hidden .mobile-drawer-trigger,
+body.hud-hidden .hud-container,
+body.hud-hidden .drawer-backdrop,
+body.hud-hidden .hotspot-card {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease;
+}
+
+body.hud-hidden .header-bar {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  pointer-events: none !important;
+}
+
+body.hud-hidden .header-bar .brand-badge,
+body.hud-hidden .header-bar .mode-tabs,
+body.hud-hidden .header-bar #btn-keynote,
+body.hud-hidden .header-bar #btn-snapshot,
+body.hud-hidden .header-bar #btn-sound {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.hud-hidden .header-bar #btn-hud {
+  pointer-events: auto !important;
+  opacity: 0.9 !important;
+  background: rgba(13, 16, 23, 0.8) !important;
+  border-color: var(--accent-orange) !important;
+  color: var(--accent-orange) !important;
+  box-shadow: 0 0 16px rgba(255, 72, 0, 0.4) !important;
+}
+
+/* Unified HUD Wrapper & Mobile Drawer Styles */
+.hud-container {
+  display: contents;
+}
+
+.mobile-drawer-top {
+  display: none;
+}
+
+.mobile-drawer-trigger {
+  display: none;
+}
+
+.drawer-backdrop {
+  display: none;
+}
+
 /* Sidebar Configurator Panels (Left & Right) */
 .hud-panel {
   position: absolute;
@@ -559,73 +616,342 @@ html, body {
   color: var(--text-muted);
 }
 
-/* Responsive adjustments */
-@media (max-width: 900px) {
+/* Responsive Styles for Tablets and Mobile Screens */
+@media (max-width: 860px) {
+  /* Header: clean single row */
   .header-bar {
-    padding: 0 12px;
-    height: 52px;
     top: 10px;
     left: 10px;
     right: 10px;
+    height: 50px;
+    padding: 0 12px;
+  }
+  .brand-badge {
+    gap: 8px;
+  }
+  .brand-logo-icon {
+    width: 22px;
+    height: 22px;
   }
   .brand-title {
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     letter-spacing: 1px;
   }
   .brand-subtitle {
     display: none;
   }
+  .mode-tabs {
+    padding: 3px;
+    gap: 2px;
+  }
   .mode-tab {
-    padding: 6px 12px;
-    font-size: 0.72rem;
+    padding: 5px 10px;
+    font-size: 0.70rem;
+    letter-spacing: 0.5px;
   }
-  .panel-left {
-    top: 68px;
-    left: 10px;
-    width: 240px;
-    padding: 12px;
-  }
-  .panel-right {
-    top: 68px;
-    right: 10px;
-    width: 250px;
-    padding: 12px;
-  }
-  .bottom-nav {
-    bottom: 12px;
-    padding: 6px 10px;
+  .header-actions {
     gap: 6px;
   }
-  .cam-btn {
-    padding: 5px 10px;
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+  .icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Dimmed Backdrop when Mobile Drawer is Open */
+  .drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 45;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .drawer-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Slide-up Controls Drawer */
+  .hud-container {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 64vh;
+    background: rgba(10, 13, 20, 0.95);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-top: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 240, 255, 0.15);
+    z-index: 50;
+    transform: translateY(105%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+
+  .hud-container.open {
+    transform: translateY(0);
+  }
+
+  /* Drawer Header & Handle */
+  .mobile-drawer-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 16px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(6, 8, 12, 0.85);
+    flex-shrink: 0;
+  }
+
+  .drawer-handle-bar {
+    width: 42px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.35);
+    margin-bottom: 8px;
+    cursor: grab;
+  }
+
+  .mobile-drawer-nav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .mobile-segmented-control {
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 3px;
+    flex: 1;
+    max-width: 320px;
+  }
+
+  .mob-tab {
+    flex: 1;
+    padding: 7px 12px;
+    border-radius: 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mob-tab.active {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(0, 102, 255, 0.25));
+    color: var(--accent-cyan);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+  }
+
+  .drawer-close-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.2s ease;
+  }
+
+  .drawer-close-btn:hover {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+  }
+
+  /* Panels inside mobile drawer */
+  .hud-container .hud-panel {
+    position: static;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 16px 20px 24px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+  }
+
+  /* Segmented tab switching inside drawer */
+  .hud-container .panel-left {
+    display: none;
+  }
+  .hud-container .panel-right {
+    display: block;
+  }
+
+  .hud-container.show-specs .panel-left {
+    display: flex;
+  }
+  .hud-container.show-specs .panel-right {
+    display: none;
+  }
+
+  /* Floating Drawer Trigger Pill */
+  .mobile-drawer-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    bottom: 58px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 9px 18px;
+    border-radius: 30px;
+    background: rgba(13, 16, 23, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 240, 255, 0.45);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 16px rgba(0, 240, 255, 0.3);
+    color: var(--text-main);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    z-index: 40;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .mobile-drawer-trigger:hover,
+  .mobile-drawer-trigger:active {
+    transform: translateX(-50%) scale(1.04);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 4px 24px rgba(0, 240, 255, 0.5);
+  }
+
+  .mobile-drawer-trigger svg {
+    color: var(--accent-cyan);
+  }
+
+  .trigger-chevron {
     font-size: 0.68rem;
+    color: var(--accent-cyan);
+    margin-left: 2px;
+  }
+
+  /* Bottom Camera Presets */
+  .bottom-nav {
+    bottom: 12px;
+    padding: 5px 10px;
+    gap: 6px;
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
+  }
+  .cam-btn {
+    padding: 6px 11px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  /* Drive Mode Mobile Overlays */
+  .drive-hud {
+    bottom: 14px;
+    left: 12px;
+    right: 12px;
+  }
+  .speedometer-container {
+    padding: 10px 16px;
+  }
+  .speed-gauge-number {
+    font-size: 2.5rem;
+  }
+  .speed-gauge-unit {
+    font-size: 0.85rem;
+  }
+  .throttle-box {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  #throttle-slider {
+    width: 100px !important;
+  }
+  .throttle-btn {
+    width: 120px;
+    height: 42px;
+    font-size: 0.78rem;
   }
 }
 
-@media (max-width: 600px) {
-  .mode-tabs {
-    position: absolute;
-    top: 56px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 20px);
-    justify-content: center;
+@media (max-width: 520px) {
+  .header-bar {
+    height: 46px;
+    padding: 0 10px;
   }
-  .panel-left {
-    top: 108px;
-    left: 10px;
-    right: 10px;
-    width: auto;
-    max-height: 220px;
-    overflow-y: auto;
+  .brand-title {
+    font-size: 0.76rem;
+    letter-spacing: 0.5px;
   }
-  .panel-right {
-    top: auto;
-    bottom: 70px;
-    left: 10px;
-    right: 10px;
-    width: auto;
-    max-height: 200px;
-    overflow-y: auto;
+  .mode-tab {
+    padding: 5px 7px;
+    font-size: 0.65rem;
+    letter-spacing: 0;
+  }
+  .header-actions {
+    gap: 4px;
+  }
+  .icon-btn {
+    width: 30px;
+    height: 30px;
+  }
+  .icon-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .swatches-grid {
+    gap: 6px;
+  }
+  .color-swatch {
+    width: 32px;
+    height: 32px;
+  }
+  .caliper-btn {
+    height: 32px;
+  }
+  .bottom-nav {
+    gap: 4px;
+    padding: 4px 6px;
+  }
+  .cam-btn {
+    padding: 5px 8px;
+    font-size: 0.66rem;
+  }
+  .mobile-drawer-trigger {
+    bottom: 50px;
+    padding: 7px 14px;
+    font-size: 0.72rem;
   }
 }

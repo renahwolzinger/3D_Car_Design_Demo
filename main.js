@@ -362,6 +362,87 @@ class App {
         this._hideHotspotCard();
       });
     }
+
+    // 11. Fullscreen HUD Toggle (Clean screenshot / showroom view)
+    const btnHud = document.getElementById('btn-hud');
+    if (btnHud) {
+      btnHud.addEventListener('click', () => {
+        document.body.classList.toggle('hud-hidden');
+        sound.playClick();
+      });
+    }
+
+    // 12. Mobile Controls Drawer & Segmented Tabs
+    const hudContainer = document.getElementById('hud-container');
+    const drawerBackdrop = document.getElementById('drawer-backdrop');
+    const btnMobileDrawer = document.getElementById('btn-mobile-drawer');
+    const drawerClose = document.getElementById('drawer-close');
+    const mobTabConfig = document.getElementById('mob-tab-config');
+    const mobTabTelemetry = document.getElementById('mob-tab-telemetry');
+
+    const openDrawer = () => {
+      if (hudContainer) hudContainer.classList.add('open');
+      if (drawerBackdrop) drawerBackdrop.classList.add('active');
+      sound.playClick();
+    };
+
+    const closeDrawer = () => {
+      if (hudContainer) hudContainer.classList.remove('open');
+      if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+    };
+
+    if (btnMobileDrawer) {
+      btnMobileDrawer.addEventListener('click', () => {
+        if (hudContainer && hudContainer.classList.contains('open')) {
+          closeDrawer();
+          sound.playClick();
+        } else {
+          openDrawer();
+        }
+      });
+    }
+
+    if (drawerClose) {
+      drawerClose.addEventListener('click', () => {
+        closeDrawer();
+        sound.playClick();
+      });
+    }
+
+    if (drawerBackdrop) {
+      drawerBackdrop.addEventListener('click', closeDrawer);
+    }
+
+    if (mobTabConfig && mobTabTelemetry) {
+      mobTabConfig.addEventListener('click', () => {
+        if (hudContainer) hudContainer.classList.remove('show-specs');
+        mobTabConfig.classList.add('active');
+        mobTabTelemetry.classList.remove('active');
+        sound.playClick();
+      });
+
+      mobTabTelemetry.addEventListener('click', () => {
+        if (hudContainer) hudContainer.classList.add('show-specs');
+        mobTabTelemetry.classList.add('active');
+        mobTabConfig.classList.remove('active');
+        sound.playClick();
+      });
+    }
+
+    // Touch swipe down on mobile drawer top bar to dismiss
+    const drawerTop = document.querySelector('.mobile-drawer-top');
+    if (drawerTop) {
+      let touchStartY = 0;
+      drawerTop.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      drawerTop.addEventListener('touchend', (e) => {
+        const touchEndY = e.changedTouches[0].clientY;
+        if (touchEndY - touchStartY > 40) {
+          closeDrawer();
+        }
+      }, { passive: true });
+    }
   }
 
   _switchMode(mode) {
@@ -370,6 +451,13 @@ class App {
     this._hideHotspotCard();
     sound.resume();
     sound.playModeChime();
+
+    // Close mobile drawer if open when switching mode
+    const hudContainer = document.getElementById('hud-container');
+    const drawerBackdrop = document.getElementById('drawer-backdrop');
+    const btnMobileDrawer = document.getElementById('btn-mobile-drawer');
+    if (hudContainer) hudContainer.classList.remove('open');
+    if (drawerBackdrop) drawerBackdrop.classList.remove('active');
 
     // Update active tab styles
     document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
@@ -385,6 +473,7 @@ class App {
     const bottomNav = document.querySelector('.bottom-nav');
     if (driveHud) driveHud.classList.toggle('active', mode === 'drive');
     if (bottomNav) bottomNav.style.display = mode === 'drive' ? 'none' : 'flex';
+    if (btnMobileDrawer) btnMobileDrawer.style.display = mode === 'drive' ? 'none' : 'flex';
 
     // Show hotspots in studio mode, hide during dynamic drive
     this.car.setHotspotsVisible(mode === 'studio');

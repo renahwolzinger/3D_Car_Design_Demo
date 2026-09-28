@@ -60,14 +60,11 @@ Built with **Three.js**, **WebGL2**, **UnrealBloomPass Post-Processing**, and na
 
 ---
 
-## 📁 File Structure
-
-- `index.html` - Application entry point, responsive HUD overlay, telemetry cards, and Three.js import map.
-- `styles.css` - Luxury automotive glassmorphism styling, responsive layout, and glowing neon accents.
-- `src/`
-  - `main.js` - Central coordinator, Three.js setup, EffectComposer bloom pipeline, raycasting for 3D hotspots, keyboard steering, and snapshot tool.
-  - `car.js` - Procedural 3D hypercar generator, PBR automotive shaders, carbon fiber texture generator, exploded view kinematics, underglow plane, and scissor doors.
-  - `particles.js` - Wind tunnel CFD streamline particle simulation and velocity/thermal color mapping.
-  - `environment.js` - Procedural PMREM HDRI studio reflection map, floor contact shadows & reflections, and dynamic neon cyber tunnel with volumetric headlights.
-  - `cameraDirector.js` - Spline-based cinematic keynote camera tour and camera presets (including cockpit).
-  - `audio.js` - Real-time procedural Web Audio sound synthesis (electric motor whine, air whoosh, door hydraulics, camera shutter, UI clicks).
+- `index.html` - Application entry point, responsive HUD overlay, mobile controls drawer, and Three.js import map.
+- `styles.css` - Luxury automotive glassmorphism styling, responsive mobile drawer, and glowing neon accents.
+- `main.js` - Central coordinator, Three.js setup, EffectComposer bloom pipeline, raycasting for 3D hotspots, keyboard steering, snapshot tool, and responsive drawer controls.
+- `car.js` - Procedural 3D Lamborghini Huracán EVO generator, angular wedge styling, Y-motif fascia, PBR paint shaders, 6-piston calipers, forged wheels, exploded kinematics, and scissor doors.
+- `particles.js` - Wind tunnel CFD streamline particle simulation and velocity/thermal color mapping.
+- `environment.js` - Procedural PMREM HDRI studio reflection map, floor contact shadows & reflections, and dynamic neon cyber tunnel with volumetric headlights.
+- `cameraDirector.js` - Spline-based cinematic keynote camera tour and camera presets (including cockpit).
+- `audio.js` - Real-time procedural Web Audio sound synthesis (electric motor whine, air whoosh, door hydraulics, camera shutter, UI clicks).
