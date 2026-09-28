@@ -372,77 +372,107 @@ class App {
       });
     }
 
-    // 12. Mobile Controls Drawer & Segmented Tabs
-    const hudContainer = document.getElementById('hud-container');
+    // 12. First-Class Collapsible Control Drawers (Left & Right)
+    const panelLeft = document.getElementById('panel-left');
+    const panelRight = document.getElementById('panel-right');
+    const btnCollapseLeft = document.getElementById('btn-collapse-left');
+    const btnExpandLeft = document.getElementById('btn-expand-left');
+    const btnCollapseRight = document.getElementById('btn-collapse-right');
+    const btnExpandRight = document.getElementById('btn-expand-right');
     const drawerBackdrop = document.getElementById('drawer-backdrop');
-    const btnMobileDrawer = document.getElementById('btn-mobile-drawer');
-    const drawerClose = document.getElementById('drawer-close');
-    const mobTabConfig = document.getElementById('mob-tab-config');
-    const mobTabTelemetry = document.getElementById('mob-tab-telemetry');
 
-    const openDrawer = () => {
-      if (hudContainer) hudContainer.classList.add('open');
-      if (drawerBackdrop) drawerBackdrop.classList.add('active');
+    const updateBackdrop = () => {
+      if (!drawerBackdrop) return;
+      const isMobile = window.innerWidth <= 860;
+      const leftOpen = panelLeft && !panelLeft.classList.contains('collapsed');
+      const rightOpen = panelRight && !panelRight.classList.contains('collapsed');
+      if (isMobile && (leftOpen || rightOpen)) {
+        drawerBackdrop.classList.add('active');
+      } else {
+        drawerBackdrop.classList.remove('active');
+      }
+    };
+
+    const collapseLeft = () => {
+      if (panelLeft) panelLeft.classList.add('collapsed');
+      if (btnExpandLeft) btnExpandLeft.classList.add('visible');
+      updateBackdrop();
+    };
+
+    const expandLeft = () => {
+      if (panelLeft) panelLeft.classList.remove('collapsed');
+      if (btnExpandLeft) btnExpandLeft.classList.remove('visible');
+      if (window.innerWidth <= 860) collapseRight();
+      updateBackdrop();
       sound.playClick();
     };
 
-    const closeDrawer = () => {
-      if (hudContainer) hudContainer.classList.remove('open');
-      if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+    const collapseRight = () => {
+      if (panelRight) panelRight.classList.add('collapsed');
+      if (btnExpandRight) btnExpandRight.classList.add('visible');
+      updateBackdrop();
     };
 
-    if (btnMobileDrawer) {
-      btnMobileDrawer.addEventListener('click', () => {
-        if (hudContainer && hudContainer.classList.contains('open')) {
-          closeDrawer();
-          sound.playClick();
-        } else {
-          openDrawer();
-        }
+    const expandRight = () => {
+      if (panelRight) panelRight.classList.remove('collapsed');
+      if (btnExpandRight) btnExpandRight.classList.remove('visible');
+      if (window.innerWidth <= 860) collapseLeft();
+      updateBackdrop();
+      sound.playClick();
+    };
+
+    if (btnCollapseLeft) {
+      btnCollapseLeft.addEventListener('click', (e) => {
+        e.stopPropagation();
+        collapseLeft();
+        sound.playClick();
       });
     }
 
-    if (drawerClose) {
-      drawerClose.addEventListener('click', () => {
-        closeDrawer();
+    if (btnExpandLeft) {
+      btnExpandLeft.addEventListener('click', (e) => {
+        e.stopPropagation();
+        expandLeft();
+      });
+    }
+
+    if (btnCollapseRight) {
+      btnCollapseRight.addEventListener('click', (e) => {
+        e.stopPropagation();
+        collapseRight();
         sound.playClick();
+      });
+    }
+
+    if (btnExpandRight) {
+      btnExpandRight.addEventListener('click', (e) => {
+        e.stopPropagation();
+        expandRight();
       });
     }
 
     if (drawerBackdrop) {
-      drawerBackdrop.addEventListener('click', closeDrawer);
-    }
-
-    if (mobTabConfig && mobTabTelemetry) {
-      mobTabConfig.addEventListener('click', () => {
-        if (hudContainer) hudContainer.classList.remove('show-specs');
-        mobTabConfig.classList.add('active');
-        mobTabTelemetry.classList.remove('active');
-        sound.playClick();
-      });
-
-      mobTabTelemetry.addEventListener('click', () => {
-        if (hudContainer) hudContainer.classList.add('show-specs');
-        mobTabTelemetry.classList.add('active');
-        mobTabConfig.classList.remove('active');
-        sound.playClick();
+      drawerBackdrop.addEventListener('click', () => {
+        collapseLeft();
+        collapseRight();
       });
     }
 
-    // Touch swipe down on mobile drawer top bar to dismiss
-    const drawerTop = document.querySelector('.mobile-drawer-top');
-    if (drawerTop) {
-      let touchStartY = 0;
-      drawerTop.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-      }, { passive: true });
-      drawerTop.addEventListener('touchend', (e) => {
-        const touchEndY = e.changedTouches[0].clientY;
-        if (touchEndY - touchStartY > 40) {
-          closeDrawer();
-        }
-      }, { passive: true });
+    // Default state: On mobile devices, start collapsed so the 3D car is 100% visible!
+    if (window.innerWidth <= 860) {
+      collapseLeft();
+      collapseRight();
+    } else {
+      if (panelLeft) panelLeft.classList.remove('collapsed');
+      if (panelRight) panelRight.classList.remove('collapsed');
+      if (btnExpandLeft) btnExpandLeft.classList.remove('visible');
+      if (btnExpandRight) btnExpandRight.classList.remove('visible');
     }
+
+    // Handle screen resize dynamically
+    window.addEventListener('resize', () => {
+      updateBackdrop();
+    });
   }
 
   _switchMode(mode) {
@@ -452,12 +482,39 @@ class App {
     sound.resume();
     sound.playModeChime();
 
-    // Close mobile drawer if open when switching mode
-    const hudContainer = document.getElementById('hud-container');
+    // Update mode titles on drawer header and edge tab
+    const rightTitle = document.getElementById('right-panel-header-title');
+    const edgeRightLabel = document.getElementById('edge-right-label');
+    const btnExpandLeft = document.getElementById('btn-expand-left');
+    const btnExpandRight = document.getElementById('btn-expand-right');
+    const panelLeft = document.getElementById('panel-left');
+    const panelRight = document.getElementById('panel-right');
     const drawerBackdrop = document.getElementById('drawer-backdrop');
-    const btnMobileDrawer = document.getElementById('btn-mobile-drawer');
-    if (hudContainer) hudContainer.classList.remove('open');
-    if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+
+    if (mode === 'studio') {
+      if (rightTitle) rightTitle.textContent = 'Configurator';
+      if (edgeRightLabel) edgeRightLabel.textContent = 'Configurator';
+    } else if (mode === 'aero') {
+      if (rightTitle) rightTitle.textContent = 'CFD Aero Lab';
+      if (edgeRightLabel) edgeRightLabel.textContent = 'Aero Lab';
+    } else if (mode === 'drive') {
+      if (rightTitle) rightTitle.textContent = 'Highway Drive';
+      if (edgeRightLabel) edgeRightLabel.textContent = 'Highway Drive';
+      if (panelLeft) panelLeft.classList.add('collapsed');
+      if (panelRight) panelRight.classList.add('collapsed');
+      if (btnExpandLeft) btnExpandLeft.classList.remove('visible');
+      if (btnExpandRight) btnExpandRight.classList.remove('visible');
+      if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+    }
+
+    if (mode !== 'drive') {
+      if (panelLeft && panelLeft.classList.contains('collapsed') && btnExpandLeft) {
+        btnExpandLeft.classList.add('visible');
+      }
+      if (panelRight && panelRight.classList.contains('collapsed') && btnExpandRight) {
+        btnExpandRight.classList.add('visible');
+      }
+    }
 
     // Update active tab styles
     document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
@@ -473,7 +530,6 @@ class App {
     const bottomNav = document.querySelector('.bottom-nav');
     if (driveHud) driveHud.classList.toggle('active', mode === 'drive');
     if (bottomNav) bottomNav.style.display = mode === 'drive' ? 'none' : 'flex';
-    if (btnMobileDrawer) btnMobileDrawer.style.display = mode === 'drive' ? 'none' : 'flex';
 
     // Show hotspots in studio mode, hide during dynamic drive
     this.car.setHotspotsVisible(mode === 'studio');
