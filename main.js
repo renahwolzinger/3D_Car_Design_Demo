@@ -379,6 +379,8 @@ class App {
     const btnExpandLeft = document.getElementById('btn-expand-left');
     const btnCollapseRight = document.getElementById('btn-collapse-right');
     const btnExpandRight = document.getElementById('btn-expand-right');
+    const btnToggleDrawers = document.getElementById('btn-toggle-drawers');
+    const drawerToggleText = document.getElementById('drawer-toggle-text');
     const drawerBackdrop = document.getElementById('drawer-backdrop');
 
     const updateBackdrop = () => {
@@ -390,6 +392,13 @@ class App {
         drawerBackdrop.classList.add('active');
       } else {
         drawerBackdrop.classList.remove('active');
+      }
+      if (btnToggleDrawers) {
+        btnToggleDrawers.classList.toggle('collapsed', !leftOpen && !rightOpen);
+        btnToggleDrawers.classList.toggle('active', leftOpen || rightOpen);
+      }
+      if (drawerToggleText) {
+        drawerToggleText.textContent = (leftOpen || rightOpen) ? 'Drawers: Open' : 'Drawers: Closed';
       }
     };
 
@@ -420,6 +429,26 @@ class App {
       updateBackdrop();
       sound.playClick();
     };
+
+    const toggleBothDrawers = () => {
+      const leftOpen = panelLeft && !panelLeft.classList.contains('collapsed');
+      const rightOpen = panelRight && !panelRight.classList.contains('collapsed');
+      if (leftOpen || rightOpen) {
+        collapseLeft();
+        collapseRight();
+      } else {
+        expandLeft();
+        expandRight();
+      }
+      sound.playClick();
+    };
+
+    if (btnToggleDrawers) {
+      btnToggleDrawers.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleBothDrawers();
+      });
+    }
 
     if (btnCollapseLeft) {
       btnCollapseLeft.addEventListener('click', (e) => {
@@ -458,6 +487,14 @@ class App {
       });
     }
 
+    // Hotkey 'C' on keyboard to toggle drawers on computer
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'c' || e.key === 'C') {
+        toggleBothDrawers();
+      }
+    });
+
     // Default state: On mobile devices, start collapsed so the 3D car is 100% visible!
     if (window.innerWidth <= 860) {
       collapseLeft();
@@ -467,6 +504,7 @@ class App {
       if (panelRight) panelRight.classList.remove('collapsed');
       if (btnExpandLeft) btnExpandLeft.classList.remove('visible');
       if (btnExpandRight) btnExpandRight.classList.remove('visible');
+      updateBackdrop();
     }
 
     // Handle screen resize dynamically
@@ -726,7 +764,11 @@ class App {
   }
 }
 
-// Boot application when DOM is ready
-window.addEventListener('DOMContentLoaded', () => {
-  new App();
-});
+// Boot application safely when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    window.appInstance = new App();
+  });
+} else {
+  window.appInstance = new App();
+}
